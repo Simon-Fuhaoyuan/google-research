@@ -110,6 +110,7 @@ def main(_):
       FLAGS.seed,
       action_repeat=config.action_repeat,
       frame_stack=config.frame_stack,
+      exp_dir=osp.join(exp_dir, 'train.monitor.csv')
   )
   eval_env = utils.make_env(
       FLAGS.env_name,
@@ -117,6 +118,7 @@ def main(_):
       action_repeat=config.action_repeat,
       frame_stack=config.frame_stack,
       save_dir=osp.join(exp_dir, "video", "eval"),
+      exp_dir=osp.join(exp_dir, 'eval.monitor.csv')
   )
 
   # Dynamically set observation and action space values.

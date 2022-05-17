@@ -26,6 +26,7 @@ import imageio
 import numpy as np
 import torch
 from xirl.models import SelfSupervisedModel
+from stable_baselines3.common.monitor import Monitor
 
 import cv2
 

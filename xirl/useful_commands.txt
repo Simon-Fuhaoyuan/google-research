@@ -1,0 +1,14 @@
+# Training with env reward
+python rl_robotube_env_reward.py --env DrawerClosingStructured-v1 --seeds 1,2,3,4,5
+
+# Train with learned reward, using small model
+python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --reward_type goal_classifier --pretrain small
+
+# Train with learned reward, using large model
+python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --reward_type goal_classifier --pretrain large
+
+# Plot multiple exps in a single graph
+python plot.py --y_label "Success Rate" --log_dir logs/DrawerClosingStructured-v1_20220515_23_23_27
+
+# Plot a specific training
+python plot.py --y_label "Success Rate" --log_dir logs/DrawerClosingStructured-v1_20220515_23_23_27/3/

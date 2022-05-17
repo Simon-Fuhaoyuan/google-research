@@ -35,6 +35,11 @@ from xirl import common
 import xmagical
 import yaml
 
+# Import robotube for gym.register
+import pyrfuniverse.envs.robotube
+from stable_baselines3.common.monitor import Monitor
+import datetime
+
 # pylint: disable=logging-fstring-interpolation
 
 ConfigDict = config_dict.ConfigDict
@@ -143,6 +148,7 @@ def make_env(
     add_episode_monitor = True,
     action_repeat = 1,
     frame_stack = 1,
+    exp_dir=None
 ):
   """Env factory with wrapping.
 
@@ -159,10 +165,14 @@ def make_env(
   """
   # Check if the env is in x-magical.
   xmagical.register_envs()
-  if env_name in xmagical.ALL_REGISTERED_ENVS:
-    env = gym.make(env_name)
-  else:
-    raise ValueError(f"{env_name} is not a valid environment name.")
+  # if env_name in xmagical.ALL_REGISTERED_ENVS:
+  env = gym.make(env_name)
+  # else:
+  #   raise ValueError(f"{env_name} is not a valid environment name.")
+
+  # Add monitor during training
+  if exp_dir is not None:
+    env = Monitor(env, filename=exp_dir, info_keywords=('is_success',))
 
   if add_episode_monitor:
     env = wrappers.EpisodeMonitor(env)
@@ -287,3 +297,7 @@ def plot_reward(rews):
     ax.grid(b=True, which="minor", linestyle="-", alpha=0.2)
   plt.minorticks_on()
   plt.show()
+
+
+def get_time_str():
+  return "{:%Y%m%d_%H_%M_%S}".format(datetime.datetime.now())
