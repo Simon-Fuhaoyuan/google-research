@@ -24,7 +24,7 @@ flags.DEFINE_string("pretrain", None, "large or small")
 def main(_):
     # Map the embodiment to the x-MAGICAL env name.
     env_name = FLAGS.env
-    CONFIG_PATH = "configs/robotube/drawer_closing.py"
+    CONFIG_PATH = "configs/robotube/drawer_closing_w_learned_reward.py"
 
     if FLAGS.pretrain == "large":
         PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/GClargemodel')
