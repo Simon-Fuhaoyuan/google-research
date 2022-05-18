@@ -4,8 +4,6 @@ import subprocess
 from absl import app
 from absl import flags
 from absl import logging
-from torchkit.experiment import string_from_kwargs
-from torchkit.experiment import unique_id
 from utils import get_time_str
 import os
 import pyrfuniverse.assets as assets
@@ -17,8 +15,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("env", None, "Which environment to train.")
 flags.DEFINE_string("device", "cuda:0", "The compute device.")
 flags.DEFINE_list("seeds", [0], "List specifying the seeds to run.")
-flags.DEFINE_string("reward_type", "goal_classifier", "goal_classifier or distance_to_goal")
-flags.DEFINE_string("pretrain", None, "large or small")
+flags.DEFINE_string("reward_type", "distance_to_goal", "goal_classifier or distance_to_goal")
 flags.DEFINE_bool("parallel", False, "Whether run program in parallel version")
 
 
@@ -27,13 +24,10 @@ def main(_):
     env_name = FLAGS.env
     CONFIG_PATH = "configs/robotube/drawer_closing_w_learned_reward.py"
 
-    if FLAGS.pretrain == "large":
-        PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/GClargemodel')
-    else:
-        PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/GCsmallmodel')
+    PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/XIRL_toydata_4000iter')
 
     # Generate a unique experiment name.
-    experiment_name = env_name + '_' + FLAGS.pretrain + '_' + get_time_str()
+    experiment_name = env_name + '_' + 'tcn' + '_' + get_time_str()
     logging.info("Experiment name: %s", experiment_name)
 
     if not FLAGS.parallel:
@@ -79,5 +73,4 @@ def main(_):
 
 if __name__ == "__main__":
     flags.mark_flag_as_required("env")
-    flags.mark_flag_as_required("pretrain")
     app.run(main)

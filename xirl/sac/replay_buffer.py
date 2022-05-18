@@ -25,6 +25,7 @@ from typing import Optional, Tuple
 import numpy as np
 import torch
 from xirl.models import SelfSupervisedModel
+import utils
 
 import cv2
 
@@ -165,6 +166,7 @@ class ReplayBufferLearnedReward(abc.ABC, ReplayBuffer):
       next_obs,
       mask,
       pixels,
+      reward_file=None
   ):
     if len(self.obses_staging) < self.batch_size:
       self.obses_staging.append(obs)
@@ -177,14 +179,23 @@ class ReplayBufferLearnedReward(abc.ABC, ReplayBuffer):
         pixels = cv2.resize(pixels, dsize=(w, h), interpolation=cv2.INTER_CUBIC)
       self.pixels_staging.append(pixels)
     else:
+      image_rewards = self._get_reward_from_image()
       for obs_s, action_s, reward_s, next_obs_s, mask_s in zip(
           self.obses_staging,
           self.actions_staging,
-          self._get_reward_from_image(),
+          image_rewards,
           self.next_obses_staging,
           self.masks_staging,
       ):
         super().insert(obs_s, action_s, reward_s, next_obs_s, mask_s)
+      if reward_file is not None:
+        learned_rewards = []
+        for image_reward in image_rewards:
+          if type(image_reward) is list:
+            learned_rewards.append(image_reward[0])
+          else:
+            learned_rewards.append(image_reward)
+        utils.write_reward(learned_rewards, reward_file)
       self._reset_staging()
 
 

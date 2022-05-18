@@ -51,6 +51,8 @@ config_flags.DEFINE_config_file(
     "File path to the training hyperparameter configuration.",
 )
 
+ENV_REWARD_FILE_NAME = 'env_reward'
+LEARNED_REWARD_FILE_NAME = 'learned_reward'
 
 def evaluate(
     policy,
@@ -110,7 +112,7 @@ def main(_):
       FLAGS.seed,
       action_repeat=config.action_repeat,
       frame_stack=config.frame_stack,
-      exp_dir=osp.join(exp_dir, 'train.monitor.csv')
+      exp_dir=osp.join(exp_dir, '0.monitor.csv')
   )
   eval_env = utils.make_env(
       FLAGS.env_name,
@@ -118,7 +120,7 @@ def main(_):
       action_repeat=config.action_repeat,
       frame_stack=config.frame_stack,
       save_dir=osp.join(exp_dir, "video", "eval"),
-      exp_dir=osp.join(exp_dir, 'eval.monitor.csv')
+      exp_dir=osp.join(exp_dir, '1.monitor.csv')
   )
 
   # Dynamically set observation and action space values.
@@ -147,6 +149,9 @@ def main(_):
   )
 
   logger = Logger(osp.join(exp_dir, "tb"), FLAGS.resume)
+  env_reward_file = osp.join(exp_dir, ENV_REWARD_FILE_NAME)
+  learned_reward_file = osp.join(exp_dir, LEARNED_REWARD_FILE_NAME)
+  episodic_rewards = []
 
   try:
     start = checkpoint_manager.restore_or_initialize()
@@ -158,6 +163,7 @@ def main(_):
         policy.eval()
         action = policy.act(observation, sample=True)
       next_observation, reward, done, info = env.step(action)
+      episodic_rewards.append(reward)
 
       if not done or "TimeLimit.truncated" in info:
         mask = 1.0
@@ -174,6 +180,7 @@ def main(_):
             next_observation,
             mask,
             env.render(mode="rgb_array"),
+            reward_file=learned_reward_file
         )
       observation = next_observation
 
@@ -181,6 +188,8 @@ def main(_):
         observation, done = env.reset(), False
         for k, v in info["episode"].items():
           logger.log_scalar(v, info["total"]["timesteps"], k, "training")
+        utils.write_reward(episodic_rewards, env_reward_file)
+        episodic_rewards.clear()
 
       if i >= config.num_seed_steps:
         policy.train()

@@ -21,7 +21,7 @@ def parse_args():
 
 def xy_success_rate_fn(r):
     x = np.cumsum(r.monitor.l)
-    y = pu.smooth(r.monitor.is_success, radius=20)
+    y = pu.smooth(r.monitor.is_success, radius=50)
 
     return x, y
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     # The gray background with axis meshes
     seaborn.set()
 
-    results = pu.load_results(log_dir)
+    results = pu.load_results(log_dir, enable_progress=False, verbose=True)
 
     if config.title == None:
         config.title = results[0].dirname.split('/')[-2].split('_')[0]

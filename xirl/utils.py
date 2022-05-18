@@ -301,3 +301,11 @@ def plot_reward(rews):
 
 def get_time_str():
   return "{:%Y%m%d_%H_%M_%S}".format(datetime.datetime.now())
+
+
+def write_reward(rewards, file):
+  with open(file, 'a+') as f:
+    for rew in rewards:
+      f.write('%.6f\n' % rew)
+
+  f.close()
