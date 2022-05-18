@@ -27,7 +27,7 @@ def main(_):
     PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/XIRL_toydata_4000iter')
 
     # Generate a unique experiment name.
-    experiment_name = env_name + '_' + 'tcn' + '_' + get_time_str()
+    experiment_name = env_name + '_' + 'xirl' + '_' + get_time_str()
     logging.info("Experiment name: %s", experiment_name)
 
     if not FLAGS.parallel:

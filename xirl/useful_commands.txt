@@ -16,10 +16,9 @@ python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --pretr
 python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --pretrain large --seeds 1,2,3,4,5 --parallel
 
 
-# TCN experiment
-
-python rl_robotube_tcn.py --env DrawerClosingUR5Structured-v1
-python rl_robotube_tcn.py --env DrawerClosingUR5Structured-v1 --parallel
+# XIRL experiment
+python rl_robotube_xirl.py --env DrawerClosingUR5Structured-v1
+python rl_robotube_xirl.py --env DrawerClosingUR5Structured-v1 --parallel
 
 
 # Plot multiple exps in a single graph

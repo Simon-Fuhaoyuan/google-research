@@ -3,7 +3,7 @@ Plot the difference between env reward and learned reward.
 The reward is calculated in episodic domain.
 
 Note: when using this script, we must copy the following files to an empty folder and run.
-`train.monitor.csv`
+`0.monitor.csv`
 'env_reward'
 `learned_reward`
 """
