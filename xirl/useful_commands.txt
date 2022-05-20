@@ -21,6 +21,11 @@ python rl_robotube_xirl.py --env DrawerClosingUR5Structured-v1
 python rl_robotube_xirl.py --env DrawerClosingUR5Structured-v1 --parallel
 
 
+# Three experiments on server
+python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --pretrain gc --seeds 1,2,3,4,5 --parallel
+python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --pretrain tcn --seeds 1,2,3,4,5 --parallel
+python rl_robotube_learned_reward.py --env DrawerClosingUR5Structured-v1 --pretrain xirl --seeds 1,2,3,4,5 --parallel
+
 # Plot multiple exps in a single graph
 python plot.py --y_label "Success Rate" --log_dir logs/DrawerClosingStructured-v1_20220515_23_23_27
 

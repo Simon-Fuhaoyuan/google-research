@@ -26,8 +26,8 @@ def main(_):
     env_name = FLAGS.env
     CONFIG_PATH = "configs/robotube/drawer_closing_w_learned_reward.py"
 
-    PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/' + FLAGS.pretrain)
-    if FLAGS.pretrain == 'goal_classifier':
+    PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/l-dod_models/' + FLAGS.pretrain)
+    if FLAGS.pretrain == 'gc':
         reward_type = 'goal_classifier'
     else:
         reward_type = 'distance_to_goal'
