@@ -17,6 +17,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string("env", None, "Which environment to train.")
 flags.DEFINE_string("device", "cuda:0", "The compute device.")
 flags.DEFINE_list("seeds", [0], "List specifying the seeds to run.")
+flags.DEFINE_string("reward_type", "goal_classifier", "goal_classifier or distance_to_goal")
 flags.DEFINE_string("pretrain", None, "large or small")
 flags.DEFINE_bool("parallel", False, "Whether run program in parallel version")
 
@@ -26,11 +27,10 @@ def main(_):
     env_name = FLAGS.env
     CONFIG_PATH = "configs/robotube/drawer_closing_w_learned_reward.py"
 
-    PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/' + FLAGS.pretrain)
-    if FLAGS.pretrain == 'goal_classifier':
-        reward_type = 'goal_classifier'
+    if FLAGS.pretrain == "large":
+        PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/GClargemodel')
     else:
-        reward_type = 'distance_to_goal'
+        PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/GCsmallmodel')
 
     # Generate a unique experiment name.
     experiment_name = env_name + '_' + FLAGS.pretrain + '_' + get_time_str()
@@ -45,7 +45,7 @@ def main(_):
             command += " --seed " + f"{seed}"
             command += " --device " + f"{FLAGS.device}"
             command += " --config.reward_wrapper.pretrained_path " + f"{PRETRAINED_PATH}"
-            command += " --config.reward_wrapper.type " + f"{reward_type}"
+            command += " --config.reward_wrapper.type " + f"{FLAGS.reward_type}"
             os.system(command)
 
     else:
@@ -69,7 +69,7 @@ def main(_):
                     "--config.reward_wrapper.pretrained_path",
                     f"{PRETRAINED_PATH}",
                     "--config.reward_wrapper.type",
-                    f"{reward_type}"
+                    f"{FLAGS.reward_type}"
                 ]))
 
         # Wait for each seed to terminate.
