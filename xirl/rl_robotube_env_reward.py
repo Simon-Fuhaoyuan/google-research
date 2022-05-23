@@ -25,7 +25,7 @@ def main(_):
     env_name = FLAGS.env
 
     # Generate a unique experiment name.
-    experiment_name = env_name + '_' + get_time_str()
+    experiment_name = env_name + '_env_' + get_time_str()
     logging.info("Experiment name: %s", experiment_name)
 
     for seed in FLAGS.seeds:
