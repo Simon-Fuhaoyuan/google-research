@@ -59,7 +59,7 @@ def main(_):
                     "--env_name",
                     f"{env_name}",
                     "--config",
-                    f"{CONFIG_PATH}",
+                    f"{config_file}",
                     "--seed",
                     f"{FLAGS.seed}",
                     "--device",
