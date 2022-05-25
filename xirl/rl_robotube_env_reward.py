@@ -61,7 +61,7 @@ def main(_):
                     "--config",
                     f"{config_file}",
                     "--seed",
-                    f"{FLAGS.seed}",
+                    f"{seed}",
                     "--device",
                     f"{FLAGS.device}",
                 ]))
