@@ -9,9 +9,10 @@ from collections import defaultdict
 
 
 MAX_STEPS = 300000
-COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
-        'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
-        'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
+# COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
+#         'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
+#         'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
+COLORS = ['#4695d6', '#ff8a5c', '#dd0a35']
 
 
 def parse_args():
@@ -170,11 +171,25 @@ def plot_results(
                 l, = ax.plot(x, y, color=COLORS[groups.index(group) % len(COLORS)])
                 g2l[group] = l
         if average_group:
+            used_color_index = []
             for group in sorted(groups):
                 xys = gresults[group]
                 if not any(xys):
                     continue
-                color = COLORS[groups.index(group) % len(COLORS)]
+
+                # Assign each group a fixed color
+                def group2color_idx(group):
+                    color_idx = 0
+                    group = group.lower()
+                    for letter in group:
+                        color_idx += ord(letter) - ord('a')
+                    return color_idx
+                color_idx = group2color_idx(group) % len(COLORS)
+                while color_idx in used_color_index:
+                    color_idx = (color_idx + 1) % len(COLORS)
+                used_color_index.append(color_idx)
+                color = COLORS[color_idx]
+
                 origxs = [xy[0] for xy in xys]
                 minxlen = min(map(len, origxs))
                 def allequal(qs):
@@ -197,29 +212,15 @@ def plot_results(
                 l, = axarr[idx_row][idx_col].plot(usex, ymean, color=color, label=group)
                 g2l[group] = l
                 if shaded_err:
-                    ax.fill_between(usex, ymean - ystderr, ymean + ystderr, color=color, alpha=.4)
+                    ax.fill_between(usex, ymean - ystderr, ymean + ystderr, color=color, alpha=.3)
                 if shaded_std:
                     ax.fill_between(usex, ymean - ystd,    ymean + ystd,    color=color, alpha=.2)
 
-
-        # https://matplotlib.org/users/legend_guide.html
         plt.tight_layout()
-        # if any(g2l.keys()):
-        #     # ax.legend(
-        #     #     g2l.values(),
-        #     #     ['%s (%i)'%(g, g2c[g]) for g in g2l] if average_group else g2l.keys(),
-        #     #     loc=2 if legend_outside else None,
-        #     #     bbox_to_anchor=(1,1) if legend_outside else None)
-        #     ax.legend(
-        #         g2l.values(),
-        #         ['%s'%(g) for g in g2l] if average_group else g2l.keys(),
-        #         loc=2 if legend_outside else None,
-        #         bbox_to_anchor=(1,1) if legend_outside else None)
         ax.set_title(sk)
-        # add xlabels, but only to the bottom row
 
         y_font_dict = {'family': 'Times New Roman', 'weight': 'normal', 'size': 20}
-        x_font_dict = {'family': 'Times New Roman', 'weight': 'normal'}
+        x_font_dict = {'family': 'Times New Roman', 'weight': 'normal', 'size': 20}
 
         plt.legend(bbox_to_anchor=(1,1))
 
@@ -241,7 +242,7 @@ if __name__ == '__main__':
     log_dir = config.log_dir
 
     # The gray background with axis meshes
-    seaborn.set()
+    # seaborn.set()
 
     results = pu.load_results(log_dir, enable_progress=False, verbose=True)
 
