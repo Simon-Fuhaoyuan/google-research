@@ -10,9 +10,9 @@ from collections import defaultdict
 
 MAX_STEPS = 300000
 # COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
-#         'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
-#         'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
-COLORS = ['#4695d6', '#ff8a5c', '#dd0a35']
+#          'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
+#          'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
+COLORS = ['#001871', '#ff585d', '#ffb549', '#41b6e6']
 
 
 def parse_args():
@@ -206,6 +206,10 @@ def plot_results(
                         'If you want to average unevenly sampled data, set resample=<number of samples you want>'
                     usex = origxs[0]
                     ys = [xy[1][:minxlen] for xy in xys]
+                y_maxs = []
+                for y in ys:
+                    y_maxs.append(y.max())
+                y_maxs = np.array(y_maxs)
                 ymean = np.mean(ys, axis=0)
                 ystd = np.std(ys, axis=0)
                 ystderr = ystd / np.sqrt(len(ys))
@@ -215,6 +219,9 @@ def plot_results(
                     ax.fill_between(usex, ymean - ystderr, ymean + ystderr, color=color, alpha=.3)
                 if shaded_std:
                     ax.fill_between(usex, ymean - ystd,    ymean + ystd,    color=color, alpha=.2)
+                print('Group: {}\tMax: {:.6f}\tMax_std: {:.6f}\tFinal: {:.6f}\tFinal_std: {:.6f}'.format(
+                    group, y_maxs.mean(), y_maxs.std() / np.sqrt(len(y_maxs)), ymean.tolist()[-1], ystderr.tolist()[-1]
+                ))
 
         plt.tight_layout()
         ax.set_title(sk)
