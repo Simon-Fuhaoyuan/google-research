@@ -8,13 +8,6 @@ import argparse
 from collections import defaultdict
 
 
-MAX_STEPS = 300000
-# COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
-#          'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
-#          'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
-COLORS = ['#001871', '#ff585d', '#ffb549', '#41b6e6']
-
-
 def parse_args():
     parser = argparse.ArgumentParser(description='Parse arguments in plotting RL training process')
     parser.add_argument('--log_dir', type=str)
@@ -242,6 +235,13 @@ def plot_results(
                 plt.ylabel(ylabel, fontdict=y_font_dict)
 
     return f, axarr, (usex, ymean, ystd)
+
+
+MAX_STEPS = -1
+# COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
+#          'brown', 'orange', 'teal',  'lightblue', 'lime', 'lavender', 'turquoise',
+#          'darkgreen', 'tan', 'salmon', 'gold',  'darkred', 'darkblue']
+COLORS = ['#001871', '#ff585d', '#ffb549', '#41b6e6']
 
 
 if __name__ == '__main__':
