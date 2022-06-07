@@ -172,7 +172,7 @@ def make_env(
 
   # Add monitor during training
   if exp_dir is not None:
-    env = Monitor(env, filename=exp_dir, info_keywords=('is_success',))
+    env = Monitor(env, filename=exp_dir, info_keywords=('is_success', 'goal'))
 
   if add_episode_monitor:
     env = wrappers.EpisodeMonitor(env)
