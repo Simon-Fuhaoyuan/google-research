@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument('--log_dir', type=str)
     parser.add_argument('--title', default=None, type=str)
     parser.add_argument('--x_label', default='Steps', type=str)
-    parser.add_argument('--y_label', default='Success Rate', choices=['Reward', 'Success Rate'], type=str)
+    parser.add_argument('--y_label', default='Success Rate', choices=['Reward', 'Success Rate', 'Goal'], type=str)
     parser.add_argument('--save_path', default=None, type=bool)
 
     config = parser.parse_args()
@@ -23,6 +23,20 @@ def parse_args():
 def xy_success_rate_fn(r):
     x = np.cumsum(r.monitor.l)
     y = pu.smooth(r.monitor.is_success, radius=50)
+
+    if MAX_STEPS < 0 or x.max() < MAX_STEPS:
+        return x, y
+
+    x_within_range = x[x<MAX_STEPS]
+    x = np.append(x_within_range, [MAX_STEPS])
+    y = y[:x.shape[0]]
+
+    return x, y
+
+
+def xy_goal_fn(r):
+    x = np.cumsum(r.monitor.l)
+    y = pu.smooth(r.monitor.goal, radius=50)
 
     if MAX_STEPS < 0 or x.max() < MAX_STEPS:
         return x, y
@@ -261,6 +275,8 @@ if __name__ == '__main__':
 
     if y_label == 'Reward':
         xy_fn = pu.default_xy_fn
+    elif y_label == 'Goal':
+        xy_fn = xy_goal_fn
     else:
         xy_fn = xy_success_rate_fn
 
