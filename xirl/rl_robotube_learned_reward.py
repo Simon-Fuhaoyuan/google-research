@@ -27,7 +27,9 @@ def main(_):
     env_name = FLAGS.env
     CONFIG_PATH = "configs/robotube"
 
-    PRETRAINED_PATH = assets.join_path('RoboTube/DrawerClosing/l-dod_models/' + FLAGS.pretrain)
+    # Parse env name and corresponding pretrained model
+    env_name_split_list = re.findall('[A-Z][^A-Z]*', env_name)
+    PRETRAINED_PATH = assets.join_path('RoboTube/Reward-Models-for-15ddl/' + env_name_split_list[0].lower() + '_' + env_name_split_list[1].lower() + '/' + FLAGS.pretrain)
     if FLAGS.pretrain == 'gc':
         reward_type = 'goal_classifier'
     else:
@@ -37,9 +39,7 @@ def main(_):
     experiment_name = env_name + '_' + FLAGS.pretrain + '_' + get_time_str()
     logging.info("Experiment name: %s", experiment_name)
 
-    # Parse env name and corresponding config file
-    env_name_split_list = re.findall('[A-Z][^A-Z]*', env_name)
-    config_file = env_name_split_list[0].lower() + '_' + env_name_split_list[1].lower() + '_w_learned_reward.py'
+    config_file = 'learned_reward.py'
     config_file = os.path.join(CONFIG_PATH, config_file)
 
     if not FLAGS.parallel:
